@@ -6,7 +6,7 @@
 
 #include <x86intrin.h>
 
-#define NBEXPERIMENTS   3
+#define NBEXPERIMENTS   7
 
 static long long unsigned int experiments [NBEXPERIMENTS] ;
 

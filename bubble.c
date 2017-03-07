@@ -72,15 +72,18 @@ void sequential_bubble_sort (int *T, const int size)
     /* TODO: sequential implementation of bubble sort */ 
     register int i;
     register int tmp;
+    register int swapped = 0;
     do {
+      swapped = 0;
       for (i = 0; i < N - 1; i++) {
         if (T[i] > T[i + 1]) {
+          swapped = 1;
           tmp = T[i];
           T[i] = T[i + 1];
           T[i + 1] = tmp;
         }
       }
-    } while (!is_sorted(T));
+    } while (swapped);
 
     return ;
 }

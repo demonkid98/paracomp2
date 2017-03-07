@@ -1,0 +1,5 @@
+*.o
+bubble
+mergesort
+qsort
+triangular_matrix

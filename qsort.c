@@ -145,6 +145,7 @@ void parallel_qsort_sort (int *T, const int size)
     register int i;
     register int begin;
 
+#pragma omp parallel for schedule (runtime) private (i, begin)
     for (i = 0; i < nb_tasks; i++) {
       begin = i * b_chunk;
       qsort(&T[begin], b_chunk, sizeof(int), compare);

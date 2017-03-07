@@ -4,7 +4,6 @@
 #include <x86intrin.h>
 
 #define NBEXPERIMENTS    7
-#define BUBBLE_CHUNK 128
 static long long unsigned int experiments [NBEXPERIMENTS] ;
 
 /* 
@@ -92,16 +91,22 @@ void sequential_bubble_sort (int *T, const int size)
 void parallel_bubble_sort (int *T, const int size)
 {
     /* TODO: parallel implementation of bubble sort */
-    int nb_tasks = N / BUBBLE_CHUNK;
+    register int nb_tasks = omp_get_max_threads();
+    register int b_chunk = N / nb_tasks;
     register int i;
     register int j;
     register int tmp;
+    register int hi;
+    register int lo;
     register int swapped = 0;
 
     do {
       swapped = 0;
+#pragma omp parallel for schedule (runtime) private (i, j, tmp, hi, lo)
       for (i = 0; i < nb_tasks; i++) {
-        for (j = BUBBLE_CHUNK * i; j < BUBBLE_CHUNK * (i + 1); j++) {
+        lo = b_chunk * i;
+        hi = b_chunk * (i + 1);
+        for (j = lo; j < hi; j++) {
           if (T[j] > T[j + 1]) {
             swapped = 1;
             tmp = T[j];
@@ -111,8 +116,9 @@ void parallel_bubble_sort (int *T, const int size)
         }
       }
       
+      j = 0;
       for (i = 0; i < nb_tasks - 1; i++) {
-        j = (i + 1) * BUBBLE_CHUNK;
+        j = j + b_chunk;
         if (T[j - 1] > T[j]) {
           swapped = 1;
           tmp = T[j];
@@ -193,7 +199,7 @@ int main (int argc, char **argv)
     }
 
   av = average (experiments) ;  
-  printf ("\n bubble parallel \t %Ld cycles\n\n", av-residu) ;
+  printf ("\n bubble parallel \t\t %Ld cycles\n\n", av-residu) ;
 
   
   // print_array (X) ;

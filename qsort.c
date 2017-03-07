@@ -149,7 +149,14 @@ void parallel_qsort_sort (int *T, const int size)
       begin = i * b_chunk;
       qsort(&T[begin], b_chunk, sizeof(int), compare);
     }
-    merge(T, size);
+    
+    int msize = b_chunk;
+    while (msize < size) {
+      for (i = 0; i < size / msize - 1; i++) {
+        merge(&T[i * msize], size);
+      }
+      msize = msize * 2;
+    }
 
     return;
 }

@@ -138,8 +138,20 @@ void parallel_qsort_sort (int *T, const int size)
 {
 
     /* TODO: parallel sorting based on libc qsort() function +
-     * sequential merging */
+     * sequential merging
+    */
+    register int nb_tasks = omp_get_max_threads();
+    register int b_chunk = size / nb_tasks;
+    register int i;
+    register int begin;
 
+    for (i = 0; i < nb_tasks; i++) {
+      begin = i * b_chunk;
+      qsort(&T[begin], b_chunk, sizeof(int), compare);
+    }
+    merge(T, size);
+
+    return;
 }
 
 

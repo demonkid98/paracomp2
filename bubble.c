@@ -75,7 +75,7 @@ void sequential_bubble_sort (int *T, const int size)
     register int swapped = 0;
     do {
       swapped = 0;
-      for (i = 0; i < N - 1; i++) {
+      for (i = 0; i < size - 1; i++) {
         if (T[i] > T[i + 1]) {
           swapped = 1;
           tmp = T[i];
@@ -92,7 +92,7 @@ void parallel_bubble_sort (int *T, const int size)
 {
     /* TODO: parallel implementation of bubble sort */
     register int nb_tasks = omp_get_max_threads();
-    register int b_chunk = N / nb_tasks;
+    register int b_chunk = size / nb_tasks;
     register int i;
     register int j;
     register int tmp;

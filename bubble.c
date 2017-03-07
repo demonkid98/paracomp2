@@ -4,6 +4,7 @@
 #include <x86intrin.h>
 
 #define NBEXPERIMENTS    7
+#define BUBBLE_CHUNK 128
 static long long unsigned int experiments [NBEXPERIMENTS] ;
 
 /* 
@@ -91,6 +92,35 @@ void sequential_bubble_sort (int *T, const int size)
 void parallel_bubble_sort (int *T, const int size)
 {
     /* TODO: parallel implementation of bubble sort */
+    int nb_tasks = N / CHUNK;
+    register int i;
+    register int j;
+    register int tmp;
+    register int swapped = 0;
+
+    do {
+      swapped = 0;
+      for (i = 0; i < nb_tasks; i++) {
+        for (j = CHUNK * i; j < CHUNK * (i + 1); j++) {
+          if (T[j] > T[j + 1]) {
+            swapped = 1;
+            tmp = T[j];
+            T[j] = T[j + 1];
+            T[j + 1] = tmp;
+          }
+        }
+      }
+      
+      for (i = 0; i < nb_tasks - 1; i++) {
+        j = (i + 1) * CHUNK;
+        if (T[j - 1] > T[j]) {
+          swapped = 1;
+          tmp = T[j];
+          T[j] = T[j - 1];
+          T[j - 1] = tmp;
+        }
+      }
+    } while (swapped);
     
   return ;
 }

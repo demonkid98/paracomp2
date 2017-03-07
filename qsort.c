@@ -6,7 +6,7 @@
 
 #include <x86intrin.h>
 
-#define NBEXPERIMENTS   7
+#define NBEXPERIMENTS   3
 
 static long long unsigned int experiments [NBEXPERIMENTS] ;
 
@@ -153,8 +153,8 @@ void parallel_qsort_sort (int *T, const int size)
   
   int msize = b_chunk;
   while (msize < size) {
-    for (i = 0; i < size / msize - 1; i++) {
-      merge(&T[i * msize], msize);
+    for (i = 0; i < size / msize / 2; i++) {
+      merge(&T[i * msize * 2], msize);
     }
     msize = msize * 2;
   }

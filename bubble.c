@@ -70,8 +70,18 @@ int is_sorted (array_int T)
 void sequential_bubble_sort (int *T, const int size)
 {
     /* TODO: sequential implementation of bubble sort */ 
+    register int i;
+    register int tmp;
+    do {
+      for (i = 0; i < N - 1; i++) {
+        if (T[i] > T[i + 1]) {
+          tmp = T[i];
+          T[i] = T[i + 1];
+          T[i + 1] = tmp;
+        }
+      }
+    } while (!is_sorted(T));
 
-    
     return ;
 }
 

@@ -102,13 +102,13 @@ void parallel_bubble_sort (int *T, const int size)
 
     do {
       swapped = 0;
-#pragma omp parallel for schedule (runtime) private (i, j, tmp, hi, lo)
+#pragma omp parallel for schedule (runtime) private (i, j, tmp, hi, lo) reduction(+:swapped)
       for (i = 0; i < nb_tasks; i++) {
         lo = b_chunk * i;
         hi = b_chunk * (i + 1);
         for (j = lo; j < hi; j++) {
           if (T[j] > T[j + 1]) {
-            swapped = 1;
+            swapped++;
             tmp = T[j];
             T[j] = T[j + 1];
             T[j + 1] = tmp;

@@ -168,7 +168,28 @@ void parallel_qsort_sort1 (int *T, const int size)
   
   /* TODO: parallel sorting based on libc qsort() function +
   * PARALLEL merging */
+
+  register int nb_tasks = omp_get_max_threads();
+  register int b_chunk = size / nb_tasks;
+  register int i;
+  register int begin;
   
+  #pragma omp parallel for schedule (runtime) private (i, begin)
+  for (i = 0; i < nb_tasks; i++) {
+    begin = i * b_chunk;
+    qsort(&T[begin], b_chunk, sizeof(int), compare);
+  }
+
+  int msize = b_chunk;
+  while (msize < size) {
+    #pragma omp parallel for schedule (runtime) private (i)
+    for (i = 0; i < size / msize / 2; i++) {
+      merge(&T[i * msize * 2], msize);
+    }
+    msize = msize * 2;
+  }
+
+  return;
 }
 
 

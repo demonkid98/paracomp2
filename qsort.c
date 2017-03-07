@@ -72,14 +72,14 @@ static int compare (const void *x, const void *y)
     /* TODO: comparison function to be used by qsort()*/
 
     /* cast x and y to int* before comparing */
-    
+    return *(int *) x - *(int *) y;
 }
 
 void sequential_qsort_sort (int *T, const int size)
 {
 
     /* TODO: sequential sorting based on libc qsort() function */
-  
+    qsort(T, size, sizeof(int), compare);
     return ;
 }
 

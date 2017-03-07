@@ -9,6 +9,7 @@
 static long long unsigned int experiments [NBEXPERIMENTS] ;
 
 #define N              1024
+#define CHUNK 4
 
 typedef double vector [N] ;
 
@@ -151,6 +152,18 @@ void mult_mat_vector_tri_inf2 (matrix M, vector b, vector c)
    this function is parallel (with OpenMP directive, dynamic scheduling)
     Computes the Multiplication between the vector b and the Triangular Lower Matrix
  */
+  register unsigned int i ;
+  register unsigned int j ;
+  register double r ;
+
+#pragma  omp parallel for schedule (dynamic, CHUNK) private (i, j, r)
+  for ( i = 0 ; i < N ; i = i + 1) {
+    r = 0.0 ;
+    for (j = 0 ; j <= i ; j = j + 1) {
+      r += M [i][j] * b [j] ;
+    }
+    c [i] = r ;
+  }
   
   return ;
 }

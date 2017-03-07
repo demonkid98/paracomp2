@@ -92,7 +92,7 @@ void sequential_bubble_sort (int *T, const int size)
 void parallel_bubble_sort (int *T, const int size)
 {
     /* TODO: parallel implementation of bubble sort */
-    int nb_tasks = N / CHUNK;
+    int nb_tasks = N / BUBBLE_CHUNK;
     register int i;
     register int j;
     register int tmp;
@@ -101,7 +101,7 @@ void parallel_bubble_sort (int *T, const int size)
     do {
       swapped = 0;
       for (i = 0; i < nb_tasks; i++) {
-        for (j = CHUNK * i; j < CHUNK * (i + 1); j++) {
+        for (j = BUBBLE_CHUNK * i; j < BUBBLE_CHUNK * (i + 1); j++) {
           if (T[j] > T[j + 1]) {
             swapped = 1;
             tmp = T[j];
@@ -112,7 +112,7 @@ void parallel_bubble_sort (int *T, const int size)
       }
       
       for (i = 0; i < nb_tasks - 1; i++) {
-        j = (i + 1) * CHUNK;
+        j = (i + 1) * BUBBLE_CHUNK;
         if (T[j - 1] > T[j]) {
           swapped = 1;
           tmp = T[j];

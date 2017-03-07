@@ -196,6 +196,18 @@ void mult_mat_vector_tri_inf4 (matrix M, vector b, vector c)
      this function is parallel (with OpenMP directive, runtime scheduling)
      Computes the Multiplication between the vector b and the Triangular Lower Matrix
  */
+  register unsigned int i ;
+  register unsigned int j ;
+  register double r ;
+
+#pragma omp parallel for schedule (runtime) private (i, j, r)
+  for ( i = 0 ; i < N ; i = i + 1) {
+    r = 0.0 ;
+    for (j = 0 ; j <= i ; j = j + 1) {
+      r += M [i][j] * b [j] ;
+    }
+    c [i] = r ;
+  }
   
   return ;
 }

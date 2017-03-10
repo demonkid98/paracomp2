@@ -77,11 +77,11 @@ void merge_sort (int *T, const int size)
 
   int sub_size = 1;
   while (sub_size < size) {
-    nb_parts = size / sub_size * 2;
+    nb_parts = size / sub_size / 2;
     for (l = 0; l < nb_parts; l++) {
       lo = l * sub_size * 2;
       hi = (l + 1) * sub_size * 2;
-      mi = (lo + hi) / 2
+      mi = (lo + hi) / 2;
       i = lo;
       j = mi;
       k = lo;
@@ -107,9 +107,9 @@ void merge_sort (int *T, const int size)
         j++;
         k++;
       }
-      memcpy(T, X, size * sizeof(int));
     }
 
+    memcpy(T, X, size * sizeof(int));
     sub_size = sub_size * 2;
   }
   free(X);

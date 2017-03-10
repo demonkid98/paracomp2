@@ -119,6 +119,56 @@ void merge_sort (int *T, const int size)
 void parallel_merge_sort (int *T, const int size)
 {
   /* TODO: sequential version of the merge sort algorithm */
+  register unsigned int i;
+  register unsigned int j;
+  register unsigned int k;
+  register unsigned int l;
+  register unsigned int nb_parts;
+  register unsigned int lo;
+  register unsigned int hi;
+  register unsigned int mi;
+  int *X = malloc(size * sizeof(int));
+
+  int sub_size = 1;
+  while (sub_size < size) {
+    nb_parts = size / sub_size / 2;
+
+    #pragma omp parallel for schedule (runtime) private (i, j, k, l, lo, hi, mi)
+    for (l = 0; l < nb_parts; l++) {
+      lo = l * sub_size * 2;
+      hi = (l + 1) * sub_size * 2;
+      mi = (lo + hi) / 2;
+      i = lo;
+      j = mi;
+      k = lo;
+
+      while (i < mi && j < hi) {
+        if (T[i] < T[j]) {
+          X[k] = T[i];
+          i++;
+        } else {
+          X[k] = T[j];
+          j++;
+        }
+        k++;
+      }
+
+      while (i < mi) {
+        X[k] = T[i];
+        i++;
+        k++;
+      }
+      while (j < hi) {
+        X[k] = T[j];
+        j++;
+        k++;
+      }
+    }
+
+    memcpy(T, X, size * sizeof(int));
+    sub_size = sub_size * 2;
+  }
+  free(X);
 }
 
 

@@ -122,46 +122,52 @@ void parallel_merge_sort (int *T, const int size)
   register unsigned int i;
   register unsigned int j;
   register unsigned int k;
-  register unsigned int l;
+  register unsigned int i1;
+  register unsigned int i2;
   register unsigned int nb_parts;
   register unsigned int lo;
   register unsigned int hi;
   register unsigned int mi;
   int *X = malloc(size * sizeof(int));
+  int max_roll = size > 128 ? 128 : size;
+  int roll_size;
 
   int sub_size = 1;
   while (sub_size < size) {
     nb_parts = size / sub_size / 2;
+    roll_size = nb_parts > max_roll : 1 ? (max_roll / nb_parts);
 
-    #pragma omp parallel for schedule (runtime) private (i, j, k, l, lo, hi, mi)
-    for (l = 0; l < nb_parts; l++) {
-      lo = l * sub_size * 2;
-      hi = (l + 1) * sub_size * 2;
-      mi = (lo + hi) / 2;
-      i = lo;
-      j = mi;
-      k = lo;
+    #pragma omp parallel for schedule (runtime) private (i, j, k, i1, i2, lo, hi, mi)
+    for (i1 = 0; i1 < nb_parts; i1 = i1 + roll_size) {
+      for (i2 = i1; i2 < i1 + roll_size; i2++) {
+        lo = l * sub_size * 2;
+        hi = (l + 1) * sub_size * 2;
+        mi = (lo + hi) / 2;
+        i = lo;
+        j = mi;
+        k = lo;
 
-      while (i < mi && j < hi) {
-        if (T[i] < T[j]) {
+        while (i < mi && j < hi) {
+          if (T[i] < T[j]) {
+            X[k] = T[i];
+            i++;
+          } else {
+            X[k] = T[j];
+            j++;
+          }
+          k++;
+        }
+
+        while (i < mi) {
           X[k] = T[i];
           i++;
-        } else {
+          k++;
+        }
+        while (j < hi) {
           X[k] = T[j];
           j++;
+          k++;
         }
-        k++;
-      }
-
-      while (i < mi) {
-        X[k] = T[i];
-        i++;
-        k++;
-      }
-      while (j < hi) {
-        X[k] = T[j];
-        j++;
-        k++;
       }
     }
 

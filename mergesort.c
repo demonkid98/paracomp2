@@ -65,40 +65,53 @@ long long unsigned int average (long long unsigned int *exps)
 
 void merge_sort (int *T, const int size)
 {
-  /* TODO: sequential version of the merge sort algorithm */
-  if (size > 1) {
-    merge_sort(T, size / 2);
-    merge_sort(&T[size / 2], size / 2);
-  }
-
-  register unsigned int i = 0;
-  register unsigned int j = size / 2;
-  register unsigned int k = 0;
+  register unsigned int i;
+  register unsigned int j;
+  register unsigned int k;
+  register unsigned int l;
+  register unsigned int nb_parts;
+  register unsigned int lo;
+  register unsigned int hi;
+  register unsigned int mi;
   int *X = malloc(size * sizeof(int));
 
-  while (i < size / 2 && j <  size) {
-    if (T[i] < T[j]) {
-      X[k] = T[i];
-      i++;
-    } else {
-      X[k] = T[j];
-      j++;
+  int sub_size = 1;
+  while (sub_size < size) {
+    nb_parts = size / sub_size * 2;
+    for (l = 0; l < nb_parts; l++) {
+      lo = l * sub_size * 2;
+      hi = (l + 1) * sub_size * 2;
+      mi = (lo + hi) / 2
+      i = lo;
+      j = mi;
+      k = lo;
+
+      while (i < mi && j < hi) {
+        if (T[i] < T[j]) {
+          X[k] = T[i];
+          i++;
+        } else {
+          X[k] = T[j];
+          j++;
+        }
+        k++;
+      }
+
+      while (i < mi) {
+        X[k] = T[i];
+        i++;
+        k++;
+      }
+      while (j < hi) {
+        X[k] = T[j];
+        j++;
+        k++;
+      }
+      memcpy(T, X, size * sizeof(int));
     }
-    k++;
-  }
 
-  while (i < size / 2) {
-    X[k] = T[i];
-    i++;
-    k++;
+    sub_size = sub_size * 2;
   }
-  while (j < size) {
-    X[k] = T[j];
-    j++;
-    k++;
-  }
-
-  memcpy(T, X, size * sizeof(int));
   free(X);
 }
 

@@ -72,11 +72,11 @@ void merge_sort (int *T, const int size)
   }
 
   register unsigned int i = 0;
-  register unsigned int j = size;
+  register unsigned int j = size / 2;
   register unsigned int k = 0;
-  int *X = malloc(size * sizeof(int) * 2);
+  int *X = malloc(size * sizeof(int));
 
-  while (i < size && j <  2 * size) {
+  while (i < size / 2 && j <  size) {
     if (T[i] < T[j]) {
       X[k] = T[i];
       i++;
@@ -87,18 +87,18 @@ void merge_sort (int *T, const int size)
     k++;
   }
 
-  while (i < size) {
+  while (i < size / 2) {
     X[k] = T[i];
     i++;
     k++;
   }
-  while (j < 2 * size) {
+  while (j < size) {
     X[k] = T[j];
     j++;
     k++;
   }
 
-  memcpy(T, X, size * sizeof(int) * 2);
+  memcpy(T, X, size * sizeof(int));
   free(X);
 }
 

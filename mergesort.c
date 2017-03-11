@@ -7,6 +7,7 @@
 #include <x86intrin.h>
 
 #define NBEXPERIMENTS   7
+#define MIN_SIZE_PER_TASK 64
 
 static long long unsigned int experiments [NBEXPERIMENTS] ;
 
@@ -129,19 +130,19 @@ void parallel_merge_sort (int *T, const int size)
   register unsigned int hi;
   register unsigned int mi;
   int *X = malloc(size * sizeof(int));
-  int max_roll = size > 128 ? 128 : size;
-  int roll_size;
+  int max_roll = size > MIN_SIZE_PER_TASK ? MIN_SIZE_PER_TASK : size;
+  register int roll_size;
 
-  int sub_size = 1;
+  register int sub_size = 1;
   while (sub_size < size) {
     nb_parts = size / sub_size / 2;
-    roll_size = nb_parts > max_roll : 1 ? (max_roll / nb_parts);
+    roll_size = sub_size > max_roll ? 1 : (max_roll / sub_size);
 
-    #pragma omp parallel for schedule (runtime) private (i, j, k, i1, i2, lo, hi, mi)
+    // TODO buggy if i1 only iterates once
     for (i1 = 0; i1 < nb_parts; i1 = i1 + roll_size) {
       for (i2 = i1; i2 < i1 + roll_size; i2++) {
-        lo = l * sub_size * 2;
-        hi = (l + 1) * sub_size * 2;
+        lo = i2 * sub_size * 2;
+        hi = (i2 + 1) * sub_size * 2;
         mi = (lo + hi) / 2;
         i = lo;
         j = mi;

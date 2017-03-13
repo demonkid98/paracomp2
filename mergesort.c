@@ -138,8 +138,9 @@ void parallel_merge_sort (int *T, const int size)
     nb_parts = size / sub_size / 2;
     roll_size = sub_size > (max_roll / 2) ? 1 : (max_roll / sub_size / 2);
 
-    #pragma omp parallel for schedule (runtime) private (i, j, k, i1, i2, lo, hi, mi)
+    #pragma omp task
     for (i1 = 0; i1 < nb_parts; i1 = i1 + roll_size) {
+      #pragma omp parallel for schedule (runtime) private (i, j, k, i2, lo, hi, mi)
       for (i2 = i1; i2 < i1 + roll_size; i2++) {
         lo = i2 * sub_size * 2;
         hi = (i2 + 1) * sub_size * 2;
